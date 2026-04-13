@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { formatTenge } from "@/lib/format-currency";
 import { Product } from "@/types";
 import ProductDetailClient from "./product-detail-client";
 
@@ -57,20 +56,12 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="font-serif text-3xl md:text-4xl text-zinc-900 leading-tight mb-4">
             {p.name}
           </h1>
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-lg font-medium">{formatTenge(p.price)}</span>
-            {p.compare_price != null && (
-              <span className="text-sm text-zinc-400 line-through">
-                {formatTenge(p.compare_price)}
-              </span>
-            )}
-          </div>
+          <ProductDetailClient product={p} />
           {p.description && (
             <p className="text-sm text-zinc-600 leading-relaxed mb-8 whitespace-pre-wrap">
               {p.description}
             </p>
           )}
-          <ProductDetailClient product={p} />
         </div>
       </div>
     </div>

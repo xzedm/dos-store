@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FavouriteIcon, Add01Icon } from "@hugeicons/core-free-icons";
@@ -10,9 +11,13 @@ import { toast } from "sonner";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCart((s) => s.addItem);
+  const qtyInCart = useCart(
+    (s) => s.items.find((i) => i.id === product.id)?.quantity ?? 0
+  );
   const addFavorite = useFavorites((s) => s.addItem);
   const removeFavorite = useFavorites((s) => s.removeItem);
   const isFavorite = useFavorites((s) => s.isFavorite(product.id));
+  const [justAdded, setJustAdded] = useState(false);
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault();
@@ -23,8 +28,15 @@ export default function ProductCard({ product }: { product: Product }) {
       price: product.price,
       image: product.images?.[0] ?? null,
     });
+    setJustAdded(true);
     toast(`${product.name} добавлен в корзину.`, { duration: 2000 });
   }
+
+  useEffect(() => {
+    if (!justAdded) return;
+    const t = window.setTimeout(() => setJustAdded(false), 600);
+    return () => window.clearTimeout(t);
+  }, [justAdded]);
 
   return (
     <Link href={`/products/${product.slug}`} className="group bg-white block">
@@ -60,15 +72,26 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <button
           onClick={handleAdd}
-          className="absolute bottom-3 left-3 right-3 bg-zinc-900 text-white text-[11px] uppercase tracking-widest py-2.5 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 rounded"
+          className={`absolute bottom-3 left-3 right-3 text-[11px] uppercase tracking-widest py-2.5 transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2 rounded ${
+            justAdded
+              ? "bg-emerald-700 text-white opacity-100 translate-y-0 scale-[1.03]"
+              : qtyInCart > 0
+                ? "bg-emerald-800 text-white opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-emerald-700"
+                : "bg-zinc-900 text-white opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-zinc-700"
+          }`}
         >
-          <HugeiconsIcon
-            icon={Add01Icon}
-            size={14}
-            color="currentColor"
-            strokeWidth={2}
-          />
-          В корзину
+          {qtyInCart === 0 && (
+            <HugeiconsIcon
+              icon={Add01Icon}
+              size={14}
+              color="currentColor"
+              strokeWidth={2}
+              className={`transition-transform duration-300 ${justAdded ? "scale-125 -rotate-6" : "scale-100 rotate-0"}`}
+            />
+          )}
+          <span className="transition-all duration-300">
+            {qtyInCart > 0 ? "В корзине" : "В корзину"}
+          </span>
         </button>
 
         <button

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import ProductCard from '@/components/product-card'
 import HeroBanner from '@/components/hero-banner'
+import { defaultHeroSettings, normalizeHeroSettings } from '@/lib/hero-settings'
 import { Product } from '@/types'
 
 export default async function StorePage({
@@ -21,13 +22,32 @@ export default async function StorePage({
     dbQuery = dbQuery.ilike('name', `%${query}%`)
   }
 
+  const { data: heroData } = await supabase
+    .from('site_settings')
+    .select(
+      'hero_title, hero_subtitle, hero_cta_label, hero_image_url, hero_image_alt'
+    )
+    .eq('id', 1)
+    .maybeSingle()
+
   const { data: products } = await dbQuery
+  const heroSettings = normalizeHeroSettings(
+    heroData
+      ? {
+          title: heroData.hero_title,
+          subtitle: heroData.hero_subtitle,
+          ctaLabel: heroData.hero_cta_label,
+          imageUrl: heroData.hero_image_url,
+          imageAlt: heroData.hero_image_alt,
+        }
+      : defaultHeroSettings
+  )
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
 
       {/* hero */}
-      {!query && <HeroBanner />}
+      {!query && <HeroBanner settings={heroSettings} />}
 
       <h2 id="catalog" className="text-[10px] uppercase tracking-widest text-zinc-400 mb-6 scroll-mt-24">
         {query ? `Результаты поиска: ${query}` : "Все товары"}

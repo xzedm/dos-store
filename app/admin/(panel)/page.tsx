@@ -11,6 +11,9 @@ export default function AdminHomePage() {
       <Button asChild>
         <Link href="/admin/products">Все товары</Link>
       </Button>
+      <Button asChild variant="outline" className="ml-2">
+        <Link href="/admin/hero">Hero баннер</Link>
+      </Button>
     </div>
   );
 }

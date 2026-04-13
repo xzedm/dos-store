@@ -50,6 +50,12 @@ export default async function AdminPanelLayout({
             >
               Товары
             </Link>
+            <Link
+              href="/admin/hero"
+              className="text-xs text-zinc-500 hover:text-zinc-900"
+            >
+              Hero баннер
+            </Link>
           </div>
           <Button asChild variant="ghost" size="sm" className="text-zinc-500">
             <Link href="/">В магазин</Link>
