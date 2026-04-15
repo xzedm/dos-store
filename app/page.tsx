@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import ProductCard from '@/components/product-card'
 import HeroBanner from '@/components/hero-banner'
+import ImageMarquee from '@/components/image-marquee'
 import { defaultHeroSettings, normalizeHeroSettings } from '@/lib/hero-settings'
 import { Product } from '@/types'
 
@@ -42,12 +43,22 @@ export default async function StorePage({
         }
       : defaultHeroSettings
   )
+  const marqueeImages =
+    products
+      ?.flatMap((product: Product) => product.images?.[0] ?? [])
+      .filter((imageUrl, index, array) => array.indexOf(imageUrl) === index)
+      .slice(0, 8) ?? []
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-
       {/* hero */}
       {!query && <HeroBanner settings={heroSettings} />}
+
+      {!query && marqueeImages.length > 0 && (
+        <div className="mb-16">
+          <ImageMarquee images={marqueeImages} speed={28} />
+        </div>
+      )}
 
       <h2 id="catalog" className="text-[10px] uppercase tracking-widest text-zinc-400 mb-6 scroll-mt-24">
         {query ? `Результаты поиска: ${query}` : "Все товары"}
