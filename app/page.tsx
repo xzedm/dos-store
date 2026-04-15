@@ -23,7 +23,7 @@ export default async function StorePage({
     dbQuery = dbQuery.ilike('name', `%${query}%`)
   }
 
-  const { data: heroData } = await supabase
+  const heroQuery = supabase
     .from('site_settings')
     .select(
       'hero_title, hero_subtitle, hero_cta_label, hero_image_url, hero_image_alt'
@@ -31,7 +31,10 @@ export default async function StorePage({
     .eq('id', 1)
     .maybeSingle()
 
-  const { data: products } = await dbQuery
+  const [{ data: heroData }, { data: products }] = await Promise.all([
+    heroQuery,
+    dbQuery,
+  ])
   const heroSettings = normalizeHeroSettings(
     heroData
       ? {
@@ -67,8 +70,12 @@ export default async function StorePage({
       {/* product grid */}
       {products && products.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-zinc-100 border border-zinc-100">
-          {products.map((product: Product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product: Product, index: number) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              imageLoading={index < 2 ? 'eager' : 'lazy'}
+            />
           ))}
         </div>
       ) : (

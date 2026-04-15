@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -32,11 +33,15 @@ export default async function ProductPage({ params }: Props) {
       <div className="grid md:grid-cols-2 gap-10 md:gap-16">
         <div className="relative aspect-3/4 bg-zinc-100 rounded-sm border border-zinc-100 overflow-hidden flex items-center justify-center text-zinc-300">
           {p.images?.[0] ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={p.images[0]}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
+              alt={p.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+              loading="eager"
+              fetchPriority="high"
+              placeholder="empty"
             />
           ) : (
             <svg

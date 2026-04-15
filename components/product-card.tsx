@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { FavouriteIcon, Add01Icon } from "@hugeicons/core-free-icons";
 import { useCart, useFavorites } from "@/lib/store";
@@ -9,7 +10,15 @@ import { formatTenge } from "@/lib/format-currency";
 import { Product } from "@/types";
 import { toast } from "sonner";
 
-export default function ProductCard({ product }: { product: Product }) {
+type Props = {
+  product: Product;
+  imageLoading?: "lazy" | "eager";
+};
+
+export default function ProductCard({
+  product,
+  imageLoading = "lazy",
+}: Props) {
   const addItem = useCart((s) => s.addItem);
   const qtyInCart = useCart(
     (s) => s.items.find((i) => i.id === product.id)?.quantity ?? 0
@@ -42,11 +51,15 @@ export default function ProductCard({ product }: { product: Product }) {
     <Link href={`/products/${product.slug}`} className="group bg-white block">
       <div className="relative aspect-3/4 bg-zinc-100 overflow-hidden">
         {product.images?.[0] ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={product.images[0]}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            className="object-cover"
+            loading={imageLoading}
+            fetchPriority={imageLoading === "eager" ? "high" : "auto"}
+            placeholder="empty"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-zinc-300">

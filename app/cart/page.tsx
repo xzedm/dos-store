@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { formatTenge } from "@/lib/format-currency";
 import { useCart } from "@/lib/store";
@@ -36,11 +37,15 @@ export default function CartPage() {
             <div className="flex items-start gap-3 min-w-0 flex-1">
               <div className="h-16 w-16 shrink-0 rounded-md border border-zinc-100 bg-zinc-100 overflow-hidden">
                 {item.image ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={item.image}
-                    alt=""
+                    alt={item.name}
+                    width={64}
+                    height={64}
+                    sizes="64px"
                     className="h-full w-full object-cover"
+                    loading="lazy"
+                    placeholder="empty"
                   />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-zinc-300">

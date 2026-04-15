@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   defaultHeroSettings,
   type HeroSettings,
@@ -36,11 +37,15 @@ export default function HeroBanner({ settings = defaultHeroSettings }: Props) {
         </div>
       </div>
       <div className="w-full md:w-1/2 aspect-square md:aspect-auto relative order-1 md:order-2 bg-[#f9f9f9]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src={hero.imageUrl}
           alt={hero.imageAlt}
-          className="absolute inset-0 w-full h-full object-cover object-center mix-blend-multiply opacity-90"
+          fill
+          sizes="(max-width: 768px) 100vw, 50vw"
+          className="object-cover object-center mix-blend-multiply opacity-90"
+          loading="eager"
+          fetchPriority="high"
+          placeholder="empty"
         />
       </div>
     </div>

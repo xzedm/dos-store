@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import styles from "./image-marquee.module.css";
 
@@ -45,13 +46,14 @@ export default function ImageMarquee({
             {images.map((imageUrl, index) => (
               <li key={`${imageUrl}-${groupIndex}-${index}`} className={styles.itemWrap}>
                 <figure className={styles.item}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={imageUrl}
                     alt={`${alt} ${index + 1}`}
-                    loading="lazy"
-                    decoding="async"
+                    fill
+                    sizes="(max-width: 768px) 72vw, 20rem"
                     className={`${styles.image} ${imageClassName}`.trim()}
+                    loading="lazy"
+                    placeholder="empty"
                   />
                 </figure>
               </li>
