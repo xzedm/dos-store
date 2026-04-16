@@ -8,6 +8,7 @@ import { FavouriteIcon, Add01Icon } from "@hugeicons/core-free-icons";
 import { useCart, useFavorites } from "@/lib/store";
 import { formatTenge } from "@/lib/format-currency";
 import { Product } from "@/types";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 type Props = {
@@ -77,11 +78,16 @@ export default function ProductCard({
           </div>
         )}
 
-        {product.compare_price && (
-          <span className="absolute top-3 left-3 bg-white text-zinc-600 text-[10px] uppercase tracking-widest px-2 py-0.5 border border-zinc-200">
-            Скидка
-          </span>
-        )}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {product.compare_price && (
+            <Badge variant="outline">Скидка</Badge>
+          )}
+          {product.badges && product.badges.length > 0 && (
+            product.badges.map((badge, idx) => (
+              <Badge key={idx} variant="outline">{badge}</Badge>
+            ))
+          )}
+        </div>
 
         <button
           onClick={handleAdd}

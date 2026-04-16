@@ -71,7 +71,7 @@ export default function CartPage() {
                   {item.name}
                 </Link>
                 <p className="text-xs text-zinc-500 mt-0.5">
-                  {formatTenge(item.price)} за шт.
+                  {formatTenge(item.price)}
                 </p>
               </div>
             </div>
@@ -103,7 +103,7 @@ export default function CartPage() {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-zinc-500"
+                className="text-red-600 hover:text-red-700 hover:bg-red-50"
                 onClick={() => removeItem(item.id)}
               >
                 Удалить

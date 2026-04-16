@@ -15,14 +15,28 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  function getSiteUrl() {
+    const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+    if (fromEnv) return fromEnv.replace(/\/$/, "");
+    if (typeof window !== "undefined") return window.location.origin;
+    return "";
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
     const supabase = createClient();
+    const siteUrl = getSiteUrl();
+    const emailRedirectTo = siteUrl
+      ? `${siteUrl}/auth/callback?next=${encodeURIComponent("/")}`
+      : undefined;
     const { error: signError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo,
+      },
     });
     setLoading(false);
     if (signError) {

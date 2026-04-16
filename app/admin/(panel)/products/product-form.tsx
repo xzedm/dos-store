@@ -30,12 +30,17 @@ export function ProductForm({ mode, product }: Props) {
   const [existingImages, setExistingImages] = useState<string[]>(
     () => product?.images?.filter(Boolean) ?? []
   );
+  const [badges, setBadges] = useState<string[]>(
+    () => product?.badges?.filter(Boolean) ?? []
+  );
+  const [badgeInput, setBadgeInput] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const fd = new FormData(form);
     fd.set("existing_images", JSON.stringify(existingImages));
+    fd.set("badges", JSON.stringify(badges));
 
     startTransition(async () => {
       let r: ActionResult;
@@ -132,6 +137,60 @@ export function ProductForm({ mode, product }: Props) {
           defaultValue={numForInput(product?.stock ?? 0)}
           placeholder="0"
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Бейджи (ярлыки)</Label>
+        <div className="flex gap-2 mb-2">
+          <input
+            type="text"
+            value={badgeInput}
+            onChange={(e) => setBadgeInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && badgeInput.trim()) {
+                e.preventDefault();
+                setBadges((prev) => [
+                  ...prev,
+                  badgeInput.trim(),
+                ]);
+                setBadgeInput("");
+              }
+            }}
+            placeholder="Например: ручная работа"
+            className="h-7 flex-1 min-w-0 rounded-md border border-input bg-input/20 px-2 py-0.5 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
+          />
+          <button
+            type="button"
+            onClick={() => {
+              if (badgeInput.trim()) {
+                setBadges((prev) => [...prev, badgeInput.trim()]);
+                setBadgeInput("");
+              }
+            }}
+            className="h-7 px-3 rounded-md border border-border text-xs font-medium hover:bg-muted/50"
+          >
+            Добавить
+          </button>
+        </div>
+        {badges.length > 0 && (
+          <ul className="flex flex-wrap gap-2">
+            {badges.map((badge, idx) => (
+              <li
+                key={idx}
+                className="flex items-center gap-2 bg-zinc-100 px-2 py-1 rounded text-xs"
+              >
+                <span>{badge}</span>
+                <button
+                  type="button"
+                  onClick={() => setBadges((prev) => prev.filter((_, i) => i !== idx))}
+                  className="text-zinc-500 hover:text-red-600 font-bold"
+                >
+                  ×
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="space-y-2">

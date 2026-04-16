@@ -125,6 +125,7 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
       comparePrice != null && comparePrice > 0 ? comparePrice : null,
     stock,
     images: imageUrls.length > 0 ? imageUrls : null,
+    badges: badges.length > 0 ? badges : null,
     category: null,
   });
 
@@ -155,6 +156,15 @@ export async function updateProduct(
   const price = parseNum(formData.get("price"));
   const comparePrice = parseNum(formData.get("compare_price"));
   const stockRaw = parseNum(formData.get("stock"));
+
+  let badges: string[] = [];
+  try {
+    badges = JSON.parse(String(formData.get("badges") ?? "[]")) as string[];
+    if (!Array.isArray(badges)) badges = [];
+    badges = badges.filter((b) => typeof b === "string" && b.trim().length > 0);
+  } catch {
+    badges = [];
+  }
 
   let existing: string[] = [];
   try {
@@ -209,6 +219,7 @@ export async function updateProduct(
         comparePrice != null && comparePrice > 0 ? comparePrice : null,
       stock,
       images: allImages.length > 0 ? allImages : null,
+      badges: badges.length > 0 ? badges : null,
     })
     .eq("id", productId);
 

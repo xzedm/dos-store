@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { CartRehydrate } from "@/components/cart-rehydrate";
+import { ConsoleSignature } from "@/components/console-signature";
 import Navbar from "@/components/navbar";
 import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <CartRehydrate />
+        <ConsoleSignature />
         <Navbar />
         <main>{children}</main>
         <Toaster />

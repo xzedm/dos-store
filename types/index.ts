@@ -8,6 +8,7 @@ export type Product = {
   images: string[] | null;
   category: string | null;
   stock: number;
+  badges: string[] | null;
   created_at: string;
 };
 
