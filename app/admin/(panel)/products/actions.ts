@@ -92,6 +92,15 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
   const comparePrice = parseNum(formData.get("compare_price"));
   const stockRaw = parseNum(formData.get("stock"));
 
+  let badges: string[] = [];
+  try {
+    badges = JSON.parse(String(formData.get("badges") ?? "[]")) as string[];
+    if (!Array.isArray(badges)) badges = [];
+    badges = badges.filter((b) => typeof b === "string" && b.trim().length > 0);
+  } catch {
+    badges = [];
+  }
+
   if (!name) return { ok: false, error: "Укажите название." };
   if (!SLUG_RE.test(slug)) {
     return {
